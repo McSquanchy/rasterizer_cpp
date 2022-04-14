@@ -32,21 +32,19 @@ int WinMain([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
       {0, 0, 0}
   };
 
-  Mesh other_cube{
-      second_cube,
-      {-1.2f, .6f, 8},
-      {1, 1, 1},
-      {-20, 15, 45}
-  };
+//  Mesh other_cube{
+//      second_cube,
+//      {-1.2f, .6f, 8},
+//      {1, 1, 1},
+//      {-20, 15, 45}
+//  };
 
   Renderer<sRGB, SD> renderer;
   renderer.AddMesh(cube);
-  renderer.AddMesh(other_cube);
+//  renderer.AddMesh(other_cube);
   renderer.SetCamera({0, 0, 0}, {0, 0, 1}, {0, 1, 0});
   renderer.SetVerticalFOV(36.0f);
   renderer.SetLights(lights);
 //  renderer.SetDrawOutline(true);
   renderer.Run();
-
-  return 0;
 }
