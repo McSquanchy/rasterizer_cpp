@@ -1,6 +1,8 @@
 # Rasterizer
 
-![](assets/README/logo.jpg)
+<p align="center">
+  <img src="assets/README/logo.jpg" alt="logo">
+</p>
 
 ## Features
 
