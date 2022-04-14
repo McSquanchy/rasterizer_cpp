@@ -11,44 +11,46 @@
 #include "../constants/colors.h"
 
 template<is_resolution U>
-class Buffer {
+class ColorBuffer {
  public:
-  explicit Buffer(std::shared_ptr<U>);
+  explicit ColorBuffer(std::shared_ptr<U>);
   [[nodiscard]] glm::vec3 &GetPixelColor(int, int);
   void SetPixelColor(int, int, glm::vec3 &);
   void ClearBuffer() noexcept;
 
  private:
   std::shared_ptr<U> m_resolution;
-  std::vector<glm::vec3> m_pixel_buffer;
+  glm::vec3 m_buff[2073600]{};
+  unsigned long m_drawCount = 0;
 };
 
 template<is_resolution U>
-Buffer<U>::Buffer(std::shared_ptr<U> resolution)
-    : m_resolution(resolution), m_pixel_buffer{} {
-  m_pixel_buffer.resize(static_cast<int>(m_resolution->height()*m_resolution->width()));
+ColorBuffer<U>::ColorBuffer(std::shared_ptr<U> resolution)
+    : m_resolution(resolution), m_buff{} {
   for (auto i = 0; i < m_resolution->height()*m_resolution->width(); ++i) {
-    m_pixel_buffer.emplace_back();
+    m_buff[i] = glm::vec3{};
   }
 }
 
 template<is_resolution U>
-glm::vec3 &Buffer<U>::GetPixelColor(int x, int y) {
-  return m_pixel_buffer[y*m_resolution->width() + x];
+glm::vec3 &ColorBuffer<U>::GetPixelColor(int x, int y) {
+  return m_buff[y*m_resolution->width() + x];
 }
 
 template<is_resolution U>
-void Buffer<U>::SetPixelColor(int x, int y, glm::vec3 &value) {
-  m_pixel_buffer[y*m_resolution->width() + x] = value;
+void ColorBuffer<U>::SetPixelColor(int x, int y, glm::vec3 &value) {
+  m_buff[y*m_resolution->width() + x] = value;
+  ++m_drawCount;
 }
 
 template<is_resolution U>
-void Buffer<U>::ClearBuffer() noexcept {
+void ColorBuffer<U>::ClearBuffer() noexcept {
   for (auto i = 0; i < m_resolution->height()*m_resolution->width(); ++i) {
-    m_pixel_buffer[i][0] = 0;
-    m_pixel_buffer[i][1] = 0;
-    m_pixel_buffer[i][2] = 0;
+    m_buff[i][0] = 0;
+    m_buff[i][1] = 0;
+    m_buff[i][2] = 0;
   }
+  m_drawCount = 0;
 }
 
 #endif // RASTERIZER_BUFFER_COLORBUFFER_H_

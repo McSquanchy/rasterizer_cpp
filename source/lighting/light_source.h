@@ -7,7 +7,7 @@
 
 #include <vec3.hpp>
 enum class LightType {
-  POINT = 1, DIRECTION = 2, AMBIENT = 3
+  POINT = 1, AMBIENT = 2
 };
 
 class LightSource {

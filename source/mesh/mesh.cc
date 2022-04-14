@@ -18,7 +18,7 @@ Mesh::Mesh(std::initializer_list<Vertex> vertices,
            glm::vec3 origin) : Mesh(vertices, triangles) {
 //  std::cout << "1 param constructor called\n";
   m_translation = glm::translate(m_translation, origin);
-  m_model = m_scale * m_translation * m_rotation;
+  m_model = m_scale*m_translation*m_rotation;
 }
 
 Mesh::Mesh(std::initializer_list<Vertex> vertices,
@@ -28,7 +28,7 @@ Mesh::Mesh(std::initializer_list<Vertex> vertices,
 //  std::cout << "2 param constructor called\n";
   m_translation = glm::translate(m_translation, origin);
   m_scale = glm::scale(m_scale, scale);
-  m_model = m_scale * m_translation;
+  m_model = m_scale*m_translation;
 }
 
 Mesh::Mesh(std::initializer_list<Vertex> vertices,
@@ -39,9 +39,9 @@ Mesh::Mesh(std::initializer_list<Vertex> vertices,
 //  std::cout << "3 param constructor called\n";
   m_translation = glm::translate(m_translation, origin);
   m_scale = glm::scale(m_scale, scale);
-  m_rotation = glm::rotate(m_rotation, rotation.x, {1, 0, 0}) * glm::rotate(m_rotation, rotation.y, {0, 1, 0})
-      * glm::rotate(m_rotation, rotation.z, {0, 0, 1});
-  m_model = m_scale * m_translation * m_rotation;
+  m_rotation = glm::rotate(m_rotation, rotation.x, {1, 0, 0})*glm::rotate(m_rotation, rotation.y, {0, 1, 0})
+      *glm::rotate(m_rotation, rotation.z, {0, 0, 1});
+  m_model = m_scale*m_translation*m_rotation;
 }
 
 Mesh::Mesh(std::vector<Triangle> &triangles, glm::vec3 origin, glm::vec3 scale, glm::vec3 rotation)
@@ -49,9 +49,9 @@ Mesh::Mesh(std::vector<Triangle> &triangles, glm::vec3 origin, glm::vec3 scale, 
   m_translation = glm::translate(m_translation, origin);
   m_scale = glm::scale(m_scale, scale);
   m_rotation = glm::mat4{1.0f};
-  m_rotation = glm::rotate(m_rotation, rotation.x, {1, 0, 0}) * glm::rotate(m_rotation, rotation.y, {0, 1, 0})
-      * glm::rotate(m_rotation, rotation.z, {0, 0, 1});
-  m_model = m_scale * m_translation * m_rotation;
+  m_rotation = glm::rotate(m_rotation, rotation.x, {1, 0, 0})*glm::rotate(m_rotation, rotation.y, {0, 1, 0})
+      *glm::rotate(m_rotation, rotation.z, {0, 0, 1});
+  m_model = m_scale*m_translation*m_rotation;
 }
 
 std::vector<Vertex> &Mesh::Vertices() {
@@ -65,11 +65,12 @@ std::vector<Triangle> &Mesh::Triangles() {
 glm::mat4 &Mesh::ModelMatrix() {
   return m_model;
 }
+
 void Mesh::Rotate(glm::vec3 &rotation) {
   m_rotation =
-      glm::rotate(glm::mat4{1.0f}, rotation.x, {1, 0, 0}) * glm::rotate(glm::mat4{1.0f}, rotation.y, {0, 1, 0})
-          * glm::rotate(glm::mat4{1.0f}, rotation.z, {0, 0, 1}) * m_rotation;
-  m_model = m_scale * m_translation * m_rotation;
+      glm::rotate(glm::mat4{1.0f}, glm::radians(rotation.x), {1, 0, 0})*glm::rotate(glm::mat4{1.0f}, glm::radians(rotation.y), {0, 1, 0})
+          *glm::rotate(glm::mat4{1.0f}, glm::radians(rotation.z), {0, 0, 1})*m_rotation;
+  m_model = m_scale*m_translation*m_rotation;
 }
 
 void Mesh::PrintModelMatrix() const noexcept {

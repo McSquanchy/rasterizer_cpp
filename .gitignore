@@ -24,3 +24,5 @@ _deps
 CmakeLists.txt
 
 .PVS-Studio
+
+documentation/

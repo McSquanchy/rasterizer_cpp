@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <fstream>
+#include "../../textures/bitmap_texture.h"
 
 namespace utility {
 
@@ -25,17 +26,23 @@ std::vector<std::string> split(const std::string &s, char delim) {
   return elems;
 }
 
-static bool ReadFile(std::vector<Triangle> &target, const std::string &file) {
+static bool ReadFile(std::vector<Triangle> &target, const std::string &file, const std::string &texture) {
   std::ifstream stream(file.c_str());
 
   if (!stream.is_open()) {
     std::cerr << "couldn't find file " << file << "\n";
     return false;
   }
+  std::shared_ptr<BitmapTexture> tx = nullptr;
+  if (!texture.empty()) {
+    tx = std::make_shared<BitmapTexture>(TextureType::DIFFUSE);
+    tx->Read(texture.c_str());
+  }
 
   std::string line;
   std::vector<Vertex> vertices;
   std::vector<glm::vec3> normals;
+  std::vector<glm::vec2> textureCoordinates;
   while (getline(stream, line)) {
     if (line[0]=='v' && line[1]==' ') {
       line = line.substr(2);
@@ -45,6 +52,10 @@ static bool ReadFile(std::vector<Triangle> &target, const std::string &file) {
       line = line.substr(3);
       auto elements = split(line, ' ');
       normals.emplace_back(std::stof(elements[0]), std::stof(elements[1]), std::stof(elements[2]));
+    } else if (line[0]=='v' && line[1]=='t') {
+      line = line.substr(3);
+      auto elements = split(line, ' ');
+      textureCoordinates.emplace_back(std::stof(elements[0]), std::stof(elements[1]));
     } else if (line[0]=='f') {
       line = line.substr(2);
       auto elements = split(line, ' ');
@@ -56,19 +67,26 @@ static bool ReadFile(std::vector<Triangle> &target, const std::string &file) {
           vertex = (int) vertices.size() + vertex;
         }
         int normal = std::stoi(params[2]);
+        int textureCoordinate = std::stoi(params[1]);
         Vertex v0 = vertices[vertex - 1];
+        v0.SetTexturePosition(textureCoordinates[textureCoordinate - 1]);
         v0.UpdateDiffuseColor({1.0f, 0, 0});
         v0.UpdateSpecularColor({1.0f, 1.0f, 1.0f});
         v0.UpdateNormal(normals[normal - 1]);
         triangleVerts.push_back(v0);
       }
-      target.emplace_back(triangleVerts[0], triangleVerts[1], triangleVerts[2]);
+      if (tx!=nullptr)
+        target.emplace_back(triangleVerts[0], triangleVerts[1], triangleVerts[2], tx);
+      else
+        target.emplace_back(triangleVerts[0], triangleVerts[1], triangleVerts[2]);
     }
   }
+
   std::cout << "Read file " << file << " successfully.\n";
   stream.close();
   return true;
 }
+
 }
 
 #endif //RASTERIZER_UTILITY_FILE_OBJ_READER_H_

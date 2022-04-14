@@ -9,7 +9,9 @@
 #include <fwd.hpp>
 #include <mat4x4.hpp>
 #include <vector>
+#include <memory>
 #include "../vertex/vertex.h"
+
 class Mesh {
  public:
   Mesh() = delete;

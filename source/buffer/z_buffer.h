@@ -18,14 +18,14 @@ class DepthBuffer {
  private:
   int m_size;
   std::shared_ptr<U> m_resolution;
-  std::vector<float> m_buff;
+  float m_buff[2073600]{};
 };
 
 template<is_resolution U>
 DepthBuffer<U>::DepthBuffer(std::shared_ptr<U> resolution)
     : m_size(resolution->width()*resolution->height()), m_resolution(resolution) {
   for (auto i = 0; i < m_size; ++i) {
-    m_buff.push_back(150.0f);
+    m_buff[i] = 150.0f;
   }
 }
 
